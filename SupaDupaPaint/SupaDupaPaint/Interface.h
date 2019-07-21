@@ -19,9 +19,11 @@ namespace SupaDupaPaint {
 	Color CurrentColor = Color::Blue;
 	Point CurrentPoint;
 	Point PreviousPoint;
+	Point CurrentClearPoint;
+	Point PreviousClearPoint;
 	bool isPressed = false;
-	bool eraserChoice = false;
-	int checkInstrument = 1;
+	bool clear = false;
+	int checkInstrument = 0;
 
 	private: System::Windows::Forms::PictureBox^  canvas;
 	private: System::Windows::Forms::Button^  pen_Button;
@@ -30,6 +32,8 @@ namespace SupaDupaPaint {
 	private: System::Windows::Forms::NumericUpDown^  pen_Size;
 	private: System::Windows::Forms::Button^  button1;
 	private: System::Windows::Forms::Button^  button2;
+	private: System::Windows::Forms::Button^  button3;
+
 	private: System::Windows::Forms::NumericUpDown^  eraser_Size;
 
 
@@ -44,6 +48,7 @@ namespace SupaDupaPaint {
 			this->clear_Button = (gcnew System::Windows::Forms::Button());
 			this->button1 = (gcnew System::Windows::Forms::Button());
 			this->button2 = (gcnew System::Windows::Forms::Button());
+			this->button3 = (gcnew System::Windows::Forms::Button());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->canvas))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pen_Size))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->eraser_Size))->BeginInit();
@@ -51,6 +56,9 @@ namespace SupaDupaPaint {
 			// 
 			// canvas
 			// 
+			this->canvas->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom)
+				| System::Windows::Forms::AnchorStyles::Left)
+				| System::Windows::Forms::AnchorStyles::Right));
 			this->canvas->BackColor = System::Drawing::Color::White;
 			this->canvas->Location = System::Drawing::Point(13, 71);
 			this->canvas->Name = L"canvas";
@@ -99,7 +107,7 @@ namespace SupaDupaPaint {
 			// 
 			// eraser_Size
 			// 
-			this->eraser_Size->Location = System::Drawing::Point(66, 42);
+			this->eraser_Size->Location = System::Drawing::Point(66, 40);
 			this->eraser_Size->Maximum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 20, 0, 0, 0 });
 			this->eraser_Size->Minimum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 1, 0, 0, 0 });
 			this->eraser_Size->Name = L"eraser_Size";
@@ -142,12 +150,24 @@ namespace SupaDupaPaint {
 			this->button2->UseVisualStyleBackColor = false;
 			this->button2->Click += gcnew System::EventHandler(this, &Interface::ellipseClick);
 			// 
+			// button3
+			// 
+			this->button3->BackColor = System::Drawing::Color::Plum;
+			this->button3->Location = System::Drawing::Point(277, 12);
+			this->button3->Name = L"button3";
+			this->button3->Size = System::Drawing::Size(70, 50);
+			this->button3->TabIndex = 8;
+			this->button3->Text = L"Stroke";
+			this->button3->UseVisualStyleBackColor = false;
+			this->button3->Click += gcnew System::EventHandler(this, &Interface::strokeClick);
+			// 
 			// Interface
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->BackColor = System::Drawing::Color::PapayaWhip;
 			this->ClientSize = System::Drawing::Size(561, 380);
+			this->Controls->Add(this->button3);
 			this->Controls->Add(this->button2);
 			this->Controls->Add(this->button1);
 			this->Controls->Add(this->clear_Button);
@@ -164,36 +184,73 @@ namespace SupaDupaPaint {
 			this->ResumeLayout(false);
 
 		}
-		// 1 - pen // 2 - eraser // 3 - rectangle // 4 - ellipse
+
+		// 1 - pen // 2 - eraser // 3 - rectangle // 4 - ellipse // 5 - stroke
+
 		void paint() {
+
 			Graphics^ a = canvas->CreateGraphics();
-			Graphics^ b = canvas->CreateGraphics();
+
 			if (checkInstrument == 1) {
 				int penSize;
 				penSize = Convert::ToInt32(pen_Size->Value);
 				Pen^ pen = gcnew Pen(CurrentColor, penSize);
-				a->DrawLine(pen, PreviousPoint, CurrentPoint);
+				a -> DrawLine(pen, PreviousPoint, CurrentPoint);
 			}
 			if (checkInstrument == 2) {
 				int eraserSize;
 				eraserSize = Convert::ToInt32(eraser_Size->Value);
 				Pen^ pen = gcnew Pen(CurrentColor, eraserSize);
-				a->DrawLine(pen, PreviousPoint, CurrentPoint);
-			}
-			if (checkInstrument == 3) {
-				int rectangleWireWidth = 2;
-				Pen^ pen = gcnew Pen(CurrentColor, rectangleWireWidth);
-				b->DrawRectangle(pen, Math::Min(PreviousPoint.X, CurrentPoint.X), Math::Min(PreviousPoint.Y, CurrentPoint.Y),
-					Math::Abs(PreviousPoint.X - CurrentPoint.X), Math::Abs(PreviousPoint.Y - CurrentPoint.Y));				
-			}
-			if (checkInstrument == 4) {
-				int ellipseWireWidth = 2;
-				Pen^ pen = gcnew Pen(CurrentColor, ellipseWireWidth);
-				b->DrawEllipse(pen, Math::Min(PreviousPoint.X, CurrentPoint.X), Math::Min(PreviousPoint.Y, CurrentPoint.Y), 
-					Math::Abs(PreviousPoint.X - CurrentPoint.X), Math::Abs(PreviousPoint.Y - CurrentPoint.Y));
+				a -> DrawLine(pen, PreviousPoint, CurrentPoint);
 			}
 		}
-		
+
+		void paintShape() {
+
+			Graphics^ a = canvas->CreateGraphics();
+
+			if (checkInstrument == 3) {
+				int rectangleWireWidth = 1;
+				Pen^ pen = gcnew Pen(CurrentColor, rectangleWireWidth);
+				a -> DrawRectangle(pen, Math::Min(PreviousPoint.X, CurrentPoint.X), Math::Min(PreviousPoint.Y, CurrentPoint.Y),
+					Math::Abs(PreviousPoint.X - CurrentPoint.X), Math::Abs(PreviousPoint.Y - CurrentPoint.Y));
+			}
+			if (checkInstrument == 4) {
+				int ellipseWireWidth = 1;
+				Pen^ pen = gcnew Pen(CurrentColor, ellipseWireWidth);
+				a -> DrawEllipse(pen, Math::Min(PreviousPoint.X, CurrentPoint.X), Math::Min(PreviousPoint.Y, CurrentPoint.Y),
+					Math::Abs(PreviousPoint.X - CurrentPoint.X), Math::Abs(PreviousPoint.Y - CurrentPoint.Y));
+			}
+			if (checkInstrument == 5) {
+				int strokeWidth = 1;
+				Pen^ pen = gcnew Pen(CurrentColor, strokeWidth);
+				a -> DrawLine(pen, PreviousPoint, CurrentPoint);
+			}
+		}
+
+		void clearShape() {
+
+			Graphics^ a = canvas->CreateGraphics();
+
+			if (checkInstrument == 3) {
+				int rectangleWireWidth = 10;
+				Pen^ pen = gcnew Pen(Color::White, rectangleWireWidth);
+				a->DrawRectangle(pen, Math::Min(PreviousClearPoint.X, CurrentClearPoint.X), Math::Min(PreviousClearPoint.Y, CurrentClearPoint.Y),
+					Math::Abs(PreviousClearPoint.X - CurrentClearPoint.X), Math::Abs(PreviousClearPoint.Y - CurrentClearPoint.Y));
+			}
+			if (checkInstrument == 4) {
+				int ellipseWireWidth = 10;
+				Pen^ pen = gcnew Pen(Color::White, ellipseWireWidth);
+				a->DrawEllipse(pen, Math::Min(PreviousClearPoint.X, CurrentClearPoint.X), Math::Min(PreviousClearPoint.Y, CurrentClearPoint.Y),
+					Math::Abs(PreviousClearPoint.X - CurrentClearPoint.X), Math::Abs(PreviousClearPoint.Y - CurrentClearPoint.Y));
+			}
+			if (checkInstrument == 5) {
+				int strokeWidth = 10;
+				Pen^ pen = gcnew Pen(Color::White, strokeWidth);
+				a->DrawLine(pen, PreviousClearPoint, CurrentClearPoint);
+			}
+		}
+
 		private: System::Void penClick(System::Object^  sender, System::EventArgs^  e) {
 			CurrentColor = Color::Blue;
 			checkInstrument = 1;
@@ -214,34 +271,44 @@ namespace SupaDupaPaint {
 			checkInstrument = 4;
 		}
 
-		private: System::Void clearClick(System::Object^  sender, System::EventArgs^  e) {
-			canvas->Refresh();
+		private: System::Void strokeClick(System::Object^  sender, System::EventArgs^  e) {
+			CurrentColor = Color::Blue;
+			checkInstrument = 5;
 		}
-		
+
+		private: System::Void clearClick(System::Object^  sender, System::EventArgs^  e) {
+			canvas -> Refresh();
+		}	
+
 		private: System::Void canvas_MouseUp(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e) {
 			isPressed = false;
-			if (checkInstrument == 3 || checkInstrument == 4) {
-				CurrentPoint = e->Location;
-				paint();
-			}
+			clear = false;
 		}
 
 		private: System::Void canvas_MouseDown(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e) {
 			isPressed = true;
-			if (checkInstrument == 1 || checkInstrument == 2) {
-				CurrentPoint = e->Location;
-			}
-			if (checkInstrument == 3 || checkInstrument == 4) {
-				PreviousPoint = e->Location;
-			}
+			PreviousPoint = e->Location;
 		}
 
 		private: System::Void canvas_MouseMove(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e) {
 			if (isPressed) {
-				if (checkInstrument == 1 || checkInstrument ==2) {
-					PreviousPoint = CurrentPoint;
+				if (checkInstrument == 1 || checkInstrument == 2) {
+					CurrentPoint = PreviousPoint;
+					PreviousPoint = e -> Location;
+					paint();					
+				}
+				if (checkInstrument == 3 || checkInstrument == 4 || checkInstrument == 5) {
+					if (clear) {
+						clearShape();
+						clear = false;
+					}
+					else {						
+						clear = true;
+					}
 					CurrentPoint = e->Location;
-					paint();
+					paintShape();
+					CurrentClearPoint = CurrentPoint;
+					PreviousClearPoint = PreviousPoint;
 				}
 			}
 		}		
