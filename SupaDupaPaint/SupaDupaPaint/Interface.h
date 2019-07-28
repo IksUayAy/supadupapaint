@@ -7,51 +7,76 @@ namespace SupaDupaPaint {
 	using namespace System::Data;
 	using namespace System::Drawing;
 
+	enum tools { pen = 1, eraser, rectangle, ellipse, stroke };
+
 	public ref class Interface : public System::Windows::Forms::Form
 	{		
 
 	public:
+
 		Interface(void)
 		{
 			InitializeComponent();
-		}
+		}	
 
-	Color CurrentColor = Color::Blue;
+	Color CurrentColor = Color::Black;
 	Point CurrentPoint;
 	Point PreviousPoint;
 	Point CurrentClearPoint;
 	Point PreviousClearPoint;
+	float width = 1;
 	bool isPressed = false;
-	bool clear = false;
 	int checkInstrument = 0;
 
 	private: System::Windows::Forms::PictureBox^  canvas;
-	private: System::Windows::Forms::Button^  pen_Button;
-	private: System::Windows::Forms::Button^  eraser_Button;
-	private: System::Windows::Forms::Button^  clear_Button;
-	private: System::Windows::Forms::NumericUpDown^  pen_Size;
-	private: System::Windows::Forms::Button^  button1;
-	private: System::Windows::Forms::Button^  button2;
-	private: System::Windows::Forms::Button^  button3;
-
-	private: System::Windows::Forms::NumericUpDown^  eraser_Size;
-
-
+	private: System::Windows::Forms::ToolStrip^  toolStripColor;
+	private: System::Windows::Forms::ToolStripButton^  blackColorButton;
+	private: System::Windows::Forms::ToolStripButton^  greyColorButton;
+	private: System::Windows::Forms::ToolStripButton^  whiteColorButton;
+	private: System::Windows::Forms::ToolStripButton^  redColorButton;
+	private: System::Windows::Forms::ToolStripButton^  yellowColorButton;
+	private: System::Windows::Forms::ToolStripButton^  greenColorButton;
+	private: System::Windows::Forms::ToolStripButton^  blueColorButton;
+	private: System::Windows::Forms::ToolStrip^  toolStripTools;
+	private: System::Windows::Forms::ToolStripDropDownButton^  toolStripDropDownButton1;
+	private: System::Windows::Forms::ToolStripButton^  rectangleButton;
+	private: System::Windows::Forms::ToolStripButton^  ellipseButton;
+	private: System::Windows::Forms::ToolStripButton^  strokeButton;
+	private: System::Windows::Forms::ToolStripButton^  penButton;
+	private: System::Windows::Forms::ToolStripButton^  eraserButton;
+	private: System::Windows::Forms::ToolStripButton^  clearButton;
+	private: System::Windows::Forms::ToolStripMenuItem^  widthOnePixel;
+	private: System::Windows::Forms::ToolStripMenuItem^  widthEightPixels;
+	private: System::Windows::Forms::ToolStripMenuItem^  widthFivePixels;
+	private: System::Windows::Forms::ToolStripMenuItem^  widthThreePixels;
 
 		void InitializeComponent(void)
 		{
+			System::ComponentModel::ComponentResourceManager^  resources = (gcnew System::ComponentModel::ComponentResourceManager(Interface::typeid));
 			this->canvas = (gcnew System::Windows::Forms::PictureBox());
-			this->pen_Button = (gcnew System::Windows::Forms::Button());
-			this->eraser_Button = (gcnew System::Windows::Forms::Button());
-			this->pen_Size = (gcnew System::Windows::Forms::NumericUpDown());
-			this->eraser_Size = (gcnew System::Windows::Forms::NumericUpDown());
-			this->clear_Button = (gcnew System::Windows::Forms::Button());
-			this->button1 = (gcnew System::Windows::Forms::Button());
-			this->button2 = (gcnew System::Windows::Forms::Button());
-			this->button3 = (gcnew System::Windows::Forms::Button());
+			this->toolStripColor = (gcnew System::Windows::Forms::ToolStrip());
+			this->blackColorButton = (gcnew System::Windows::Forms::ToolStripButton());
+			this->greyColorButton = (gcnew System::Windows::Forms::ToolStripButton());
+			this->whiteColorButton = (gcnew System::Windows::Forms::ToolStripButton());
+			this->redColorButton = (gcnew System::Windows::Forms::ToolStripButton());
+			this->yellowColorButton = (gcnew System::Windows::Forms::ToolStripButton());
+			this->greenColorButton = (gcnew System::Windows::Forms::ToolStripButton());
+			this->blueColorButton = (gcnew System::Windows::Forms::ToolStripButton());
+			this->toolStripDropDownButton1 = (gcnew System::Windows::Forms::ToolStripDropDownButton());
+			this->widthOnePixel = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->widthThreePixels = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->widthFivePixels = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->widthEightPixels = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->toolStripTools = (gcnew System::Windows::Forms::ToolStrip());
+			this->rectangleButton = (gcnew System::Windows::Forms::ToolStripButton());
+			this->ellipseButton = (gcnew System::Windows::Forms::ToolStripButton());
+			this->strokeButton = (gcnew System::Windows::Forms::ToolStripButton());
+			this->penButton = (gcnew System::Windows::Forms::ToolStripButton());
+			this->eraserButton = (gcnew System::Windows::Forms::ToolStripButton());
+			this->clearButton = (gcnew System::Windows::Forms::ToolStripButton());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->canvas))->BeginInit();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pen_Size))->BeginInit();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->eraser_Size))->BeginInit();
+			this->toolStripColor->SuspendLayout();
+			this->toolStripTools->SuspendLayout();
 			this->SuspendLayout();
 			// 
 			// canvas
@@ -60,229 +85,318 @@ namespace SupaDupaPaint {
 				| System::Windows::Forms::AnchorStyles::Left)
 				| System::Windows::Forms::AnchorStyles::Right));
 			this->canvas->BackColor = System::Drawing::Color::White;
-			this->canvas->Location = System::Drawing::Point(13, 71);
+			this->canvas->Location = System::Drawing::Point(39, 6);
 			this->canvas->Name = L"canvas";
-			this->canvas->Size = System::Drawing::Size(537, 299);
+			this->canvas->Size = System::Drawing::Size(477, 440);
 			this->canvas->TabIndex = 0;
 			this->canvas->TabStop = false;
 			this->canvas->MouseDown += gcnew System::Windows::Forms::MouseEventHandler(this, &Interface::canvas_MouseDown);
 			this->canvas->MouseMove += gcnew System::Windows::Forms::MouseEventHandler(this, &Interface::canvas_MouseMove);
 			this->canvas->MouseUp += gcnew System::Windows::Forms::MouseEventHandler(this, &Interface::canvas_MouseUp);
 			// 
-			// pen_Button
+			// toolStripColor
 			// 
-			this->pen_Button->BackColor = System::Drawing::Color::Plum;
-			this->pen_Button->Font = (gcnew System::Drawing::Font(L"Calibri", 8.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(204)));
-			this->pen_Button->Location = System::Drawing::Point(13, 12);
-			this->pen_Button->Name = L"pen_Button";
-			this->pen_Button->Size = System::Drawing::Size(47, 23);
-			this->pen_Button->TabIndex = 1;
-			this->pen_Button->Text = L"Pen";
-			this->pen_Button->UseVisualStyleBackColor = false;
-			this->pen_Button->Click += gcnew System::EventHandler(this, &Interface::penClick);
+			this->toolStripColor->AutoSize = false;
+			this->toolStripColor->BackColor = System::Drawing::SystemColors::ButtonFace;
+			this->toolStripColor->Dock = System::Windows::Forms::DockStyle::Right;
+			this->toolStripColor->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(8) {
+				this->blackColorButton,
+					this->greyColorButton, this->whiteColorButton, this->redColorButton, this->yellowColorButton, this->greenColorButton, this->blueColorButton,
+					this->toolStripDropDownButton1
+			});
+			this->toolStripColor->Location = System::Drawing::Point(521, 0);
+			this->toolStripColor->Name = L"toolStripColor";
+			this->toolStripColor->Size = System::Drawing::Size(40, 450);
+			this->toolStripColor->TabIndex = 10;
+			this->toolStripColor->Text = L"toolStrip1";
 			// 
-			// eraser_Button
+			// blackColorButton
 			// 
-			this->eraser_Button->BackColor = System::Drawing::Color::Plum;
-			this->eraser_Button->Font = (gcnew System::Drawing::Font(L"Calibri", 8.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(204)));
-			this->eraser_Button->Location = System::Drawing::Point(13, 40);
-			this->eraser_Button->Name = L"eraser_Button";
-			this->eraser_Button->Size = System::Drawing::Size(47, 23);
-			this->eraser_Button->TabIndex = 2;
-			this->eraser_Button->Text = L"Eraser";
-			this->eraser_Button->UseVisualStyleBackColor = false;
-			this->eraser_Button->Click += gcnew System::EventHandler(this, &Interface::eraserClick);
+			this->blackColorButton->AutoSize = false;
+			this->blackColorButton->BackgroundImage = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"blackColorButton.BackgroundImage")));
+			this->blackColorButton->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Image;
+			this->blackColorButton->ImageTransparentColor = System::Drawing::Color::Magenta;
+			this->blackColorButton->Margin = System::Windows::Forms::Padding(0, 1, 5, 2);
+			this->blackColorButton->Name = L"blackColorButton";
+			this->blackColorButton->Size = System::Drawing::Size(30, 30);
+			this->blackColorButton->Click += gcnew System::EventHandler(this, &Interface::blackColorButtonClick);
 			// 
-			// pen_Size
+			// greyColorButton
 			// 
-			this->pen_Size->Location = System::Drawing::Point(66, 14);
-			this->pen_Size->Maximum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 20, 0, 0, 0 });
-			this->pen_Size->Minimum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 1, 0, 0, 0 });
-			this->pen_Size->Name = L"pen_Size";
-			this->pen_Size->Size = System::Drawing::Size(47, 20);
-			this->pen_Size->TabIndex = 3;
-			this->pen_Size->Value = System::Decimal(gcnew cli::array< System::Int32 >(4) { 1, 0, 0, 0 });
+			this->greyColorButton->AutoSize = false;
+			this->greyColorButton->BackgroundImage = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"greyColorButton.BackgroundImage")));
+			this->greyColorButton->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Image;
+			this->greyColorButton->ImageTransparentColor = System::Drawing::Color::Magenta;
+			this->greyColorButton->Margin = System::Windows::Forms::Padding(0, 1, 5, 2);
+			this->greyColorButton->Name = L"greyColorButton";
+			this->greyColorButton->Size = System::Drawing::Size(30, 30);
+			this->greyColorButton->Text = L"toolStripButton2";
+			this->greyColorButton->Click += gcnew System::EventHandler(this, &Interface::greyColorButtonClick);
 			// 
-			// eraser_Size
+			// whiteColorButton
 			// 
-			this->eraser_Size->Location = System::Drawing::Point(66, 40);
-			this->eraser_Size->Maximum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 20, 0, 0, 0 });
-			this->eraser_Size->Minimum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 1, 0, 0, 0 });
-			this->eraser_Size->Name = L"eraser_Size";
-			this->eraser_Size->Size = System::Drawing::Size(47, 20);
-			this->eraser_Size->TabIndex = 4;
-			this->eraser_Size->Value = System::Decimal(gcnew cli::array< System::Int32 >(4) { 1, 0, 0, 0 });
+			this->whiteColorButton->AutoSize = false;
+			this->whiteColorButton->BackgroundImage = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"whiteColorButton.BackgroundImage")));
+			this->whiteColorButton->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Image;
+			this->whiteColorButton->ImageTransparentColor = System::Drawing::Color::Magenta;
+			this->whiteColorButton->Margin = System::Windows::Forms::Padding(0, 1, 5, 2);
+			this->whiteColorButton->Name = L"whiteColorButton";
+			this->whiteColorButton->Size = System::Drawing::Size(30, 30);
+			this->whiteColorButton->Text = L"toolStripButton7";
+			this->whiteColorButton->Click += gcnew System::EventHandler(this, &Interface::whiteColorButtonClick);
 			// 
-			// clear_Button
+			// redColorButton
 			// 
-			this->clear_Button->BackColor = System::Drawing::Color::Plum;
-			this->clear_Button->Font = (gcnew System::Drawing::Font(L"Calibri", 8.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(204)));
-			this->clear_Button->Location = System::Drawing::Point(476, 12);
-			this->clear_Button->Name = L"clear_Button";
-			this->clear_Button->Size = System::Drawing::Size(75, 51);
-			this->clear_Button->TabIndex = 5;
-			this->clear_Button->Text = L"Clear";
-			this->clear_Button->UseVisualStyleBackColor = false;
-			this->clear_Button->Click += gcnew System::EventHandler(this, &Interface::clearClick);
+			this->redColorButton->AutoSize = false;
+			this->redColorButton->BackgroundImage = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"redColorButton.BackgroundImage")));
+			this->redColorButton->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Image;
+			this->redColorButton->ImageTransparentColor = System::Drawing::Color::Magenta;
+			this->redColorButton->Margin = System::Windows::Forms::Padding(0, 1, 5, 2);
+			this->redColorButton->Name = L"redColorButton";
+			this->redColorButton->Size = System::Drawing::Size(30, 30);
+			this->redColorButton->Text = L"toolStripButton3";
+			this->redColorButton->Click += gcnew System::EventHandler(this, &Interface::redColorButtonClick);
 			// 
-			// button1
+			// yellowColorButton
 			// 
-			this->button1->BackColor = System::Drawing::Color::Plum;
-			this->button1->Location = System::Drawing::Point(125, 12);
-			this->button1->Name = L"button1";
-			this->button1->Size = System::Drawing::Size(70, 50);
-			this->button1->TabIndex = 6;
-			this->button1->Text = L"Rectangle";
-			this->button1->UseVisualStyleBackColor = false;
-			this->button1->Click += gcnew System::EventHandler(this, &Interface::rectangleClick);
+			this->yellowColorButton->AutoSize = false;
+			this->yellowColorButton->BackgroundImage = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"yellowColorButton.BackgroundImage")));
+			this->yellowColorButton->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Image;
+			this->yellowColorButton->ImageTransparentColor = System::Drawing::Color::Magenta;
+			this->yellowColorButton->Margin = System::Windows::Forms::Padding(0, 1, 5, 2);
+			this->yellowColorButton->Name = L"yellowColorButton";
+			this->yellowColorButton->Size = System::Drawing::Size(30, 30);
+			this->yellowColorButton->Text = L"toolStripButton5";
+			this->yellowColorButton->Click += gcnew System::EventHandler(this, &Interface::yellowColorButtonClick);
 			// 
-			// button2
+			// greenColorButton
 			// 
-			this->button2->BackColor = System::Drawing::Color::Plum;
-			this->button2->Location = System::Drawing::Point(201, 12);
-			this->button2->Name = L"button2";
-			this->button2->Size = System::Drawing::Size(70, 50);
-			this->button2->TabIndex = 7;
-			this->button2->Text = L"Ellipse";
-			this->button2->UseVisualStyleBackColor = false;
-			this->button2->Click += gcnew System::EventHandler(this, &Interface::ellipseClick);
+			this->greenColorButton->AutoSize = false;
+			this->greenColorButton->BackgroundImage = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"greenColorButton.BackgroundImage")));
+			this->greenColorButton->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Image;
+			this->greenColorButton->ImageTransparentColor = System::Drawing::Color::Magenta;
+			this->greenColorButton->Margin = System::Windows::Forms::Padding(0, 1, 5, 2);
+			this->greenColorButton->Name = L"greenColorButton";
+			this->greenColorButton->Size = System::Drawing::Size(30, 30);
+			this->greenColorButton->Text = L"toolStripButton6";
+			this->greenColorButton->Click += gcnew System::EventHandler(this, &Interface::greenColorButtonClick);
 			// 
-			// button3
+			// blueColorButton
 			// 
-			this->button3->BackColor = System::Drawing::Color::Plum;
-			this->button3->Location = System::Drawing::Point(277, 12);
-			this->button3->Name = L"button3";
-			this->button3->Size = System::Drawing::Size(70, 50);
-			this->button3->TabIndex = 8;
-			this->button3->Text = L"Stroke";
-			this->button3->UseVisualStyleBackColor = false;
-			this->button3->Click += gcnew System::EventHandler(this, &Interface::strokeClick);
+			this->blueColorButton->AutoSize = false;
+			this->blueColorButton->BackgroundImage = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"blueColorButton.BackgroundImage")));
+			this->blueColorButton->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Image;
+			this->blueColorButton->ImageTransparentColor = System::Drawing::Color::Magenta;
+			this->blueColorButton->Margin = System::Windows::Forms::Padding(0, 1, 5, 2);
+			this->blueColorButton->Name = L"blueColorButton";
+			this->blueColorButton->Size = System::Drawing::Size(30, 30);
+			this->blueColorButton->Text = L"toolStripButton4";
+			this->blueColorButton->Click += gcnew System::EventHandler(this, &Interface::blueColorButtonClick);
+			// 
+			// toolStripDropDownButton1
+			// 
+			this->toolStripDropDownButton1->AutoSize = false;
+			this->toolStripDropDownButton1->BackgroundImage = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"toolStripDropDownButton1.BackgroundImage")));
+			this->toolStripDropDownButton1->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Image;
+			this->toolStripDropDownButton1->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(4) {
+				this->widthOnePixel,
+					this->widthThreePixels, this->widthFivePixels, this->widthEightPixels
+			});
+			this->toolStripDropDownButton1->ImageTransparentColor = System::Drawing::Color::Magenta;
+			this->toolStripDropDownButton1->Name = L"toolStripDropDownButton1";
+			this->toolStripDropDownButton1->Size = System::Drawing::Size(30, 30);
+			this->toolStripDropDownButton1->Text = L"toolStripDropDownButton1";
+			// 
+			// widthOnePixel
+			// 
+			this->widthOnePixel->AutoSize = false;
+			this->widthOnePixel->BackColor = System::Drawing::SystemColors::Control;
+			this->widthOnePixel->BackgroundImage = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"widthOnePixel.BackgroundImage")));
+			this->widthOnePixel->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Center;
+			this->widthOnePixel->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Image;
+			this->widthOnePixel->ImageScaling = System::Windows::Forms::ToolStripItemImageScaling::None;
+			this->widthOnePixel->Name = L"widthOnePixel";
+			this->widthOnePixel->Size = System::Drawing::Size(80, 20);
+			this->widthOnePixel->Click += gcnew System::EventHandler(this, &Interface::widthOnePixelClick);
+			// 
+			// widthThreePixels
+			// 
+			this->widthThreePixels->AutoSize = false;
+			this->widthThreePixels->BackgroundImage = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"widthThreePixels.BackgroundImage")));
+			this->widthThreePixels->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Center;
+			this->widthThreePixels->Name = L"widthThreePixels";
+			this->widthThreePixels->Size = System::Drawing::Size(80, 20);
+			this->widthThreePixels->Click += gcnew System::EventHandler(this, &Interface::widthThreePixelsClick);
+			// 
+			// widthFivePixels
+			// 
+			this->widthFivePixels->AutoSize = false;
+			this->widthFivePixels->BackgroundImage = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"widthFivePixels.BackgroundImage")));
+			this->widthFivePixels->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Center;
+			this->widthFivePixels->Name = L"widthFivePixels";
+			this->widthFivePixels->Size = System::Drawing::Size(80, 20);
+			this->widthFivePixels->Click += gcnew System::EventHandler(this, &Interface::widthFivePixelsClick);
+			// 
+			// widthEightPixels
+			// 
+			this->widthEightPixels->AutoSize = false;
+			this->widthEightPixels->BackgroundImage = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"widthEightPixels.BackgroundImage")));
+			this->widthEightPixels->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Center;
+			this->widthEightPixels->Name = L"widthEightPixels";
+			this->widthEightPixels->Size = System::Drawing::Size(80, 20);
+			this->widthEightPixels->Click += gcnew System::EventHandler(this, &Interface::widthEightPixelsClick);
+			// 
+			// toolStripTools
+			// 
+			this->toolStripTools->AutoSize = false;
+			this->toolStripTools->BackColor = System::Drawing::SystemColors::ButtonFace;
+			this->toolStripTools->Dock = System::Windows::Forms::DockStyle::Left;
+			this->toolStripTools->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(6) {
+				this->rectangleButton,
+					this->ellipseButton, this->strokeButton, this->penButton, this->eraserButton, this->clearButton
+			});
+			this->toolStripTools->Location = System::Drawing::Point(0, 0);
+			this->toolStripTools->Name = L"toolStripTools";
+			this->toolStripTools->Size = System::Drawing::Size(35, 450);
+			this->toolStripTools->TabIndex = 11;
+			this->toolStripTools->Text = L"toolStrip2";
+			// 
+			// rectangleButton
+			// 
+			this->rectangleButton->AutoSize = false;
+			this->rectangleButton->BackgroundImage = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"rectangleButton.BackgroundImage")));
+			this->rectangleButton->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Image;
+			this->rectangleButton->ImageTransparentColor = System::Drawing::Color::Magenta;
+			this->rectangleButton->Name = L"rectangleButton";
+			this->rectangleButton->Size = System::Drawing::Size(20, 20);
+			this->rectangleButton->Click += gcnew System::EventHandler(this, &Interface::rectangleButtonClick);
+			// 
+			// ellipseButton
+			// 
+			this->ellipseButton->AutoSize = false;
+			this->ellipseButton->BackgroundImage = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"ellipseButton.BackgroundImage")));
+			this->ellipseButton->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Image;
+			this->ellipseButton->ImageTransparentColor = System::Drawing::Color::Magenta;
+			this->ellipseButton->Name = L"ellipseButton";
+			this->ellipseButton->Size = System::Drawing::Size(20, 20);
+			this->ellipseButton->Text = L"toolStripButton2";
+			this->ellipseButton->Click += gcnew System::EventHandler(this, &Interface::ellipseButtonClick);
+			// 
+			// strokeButton
+			// 
+			this->strokeButton->AutoSize = false;
+			this->strokeButton->BackgroundImage = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"strokeButton.BackgroundImage")));
+			this->strokeButton->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Image;
+			this->strokeButton->ImageTransparentColor = System::Drawing::Color::Magenta;
+			this->strokeButton->Name = L"strokeButton";
+			this->strokeButton->Size = System::Drawing::Size(20, 20);
+			this->strokeButton->Text = L"toolStripButton3";
+			this->strokeButton->Click += gcnew System::EventHandler(this, &Interface::strokeButtonClick);
+			// 
+			// penButton
+			// 
+			this->penButton->AutoSize = false;
+			this->penButton->BackgroundImage = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"penButton.BackgroundImage")));
+			this->penButton->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Image;
+			this->penButton->ImageTransparentColor = System::Drawing::Color::Magenta;
+			this->penButton->Name = L"penButton";
+			this->penButton->Size = System::Drawing::Size(20, 20);
+			this->penButton->Text = L"toolStripButton5";
+			this->penButton->Click += gcnew System::EventHandler(this, &Interface::penButtonClick);
+			// 
+			// eraserButton
+			// 
+			this->eraserButton->AutoSize = false;
+			this->eraserButton->BackgroundImage = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"eraserButton.BackgroundImage")));
+			this->eraserButton->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Image;
+			this->eraserButton->ImageTransparentColor = System::Drawing::Color::Magenta;
+			this->eraserButton->Name = L"eraserButton";
+			this->eraserButton->Size = System::Drawing::Size(20, 20);
+			this->eraserButton->Text = L"toolStripButton4";
+			this->eraserButton->Click += gcnew System::EventHandler(this, &Interface::eraserButtonClick);
+			// 
+			// clearButton
+			// 
+			this->clearButton->AutoSize = false;
+			this->clearButton->BackgroundImage = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"clearButton.BackgroundImage")));
+			this->clearButton->DisplayStyle = System::Windows::Forms::ToolStripItemDisplayStyle::Image;
+			this->clearButton->ImageTransparentColor = System::Drawing::Color::Magenta;
+			this->clearButton->Name = L"clearButton";
+			this->clearButton->Size = System::Drawing::Size(20, 20);
+			this->clearButton->Text = L"toolStripButton6";
+			this->clearButton->Click += gcnew System::EventHandler(this, &Interface::clearButton_Click);
 			// 
 			// Interface
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->BackColor = System::Drawing::Color::PapayaWhip;
-			this->ClientSize = System::Drawing::Size(561, 380);
-			this->Controls->Add(this->button3);
-			this->Controls->Add(this->button2);
-			this->Controls->Add(this->button1);
-			this->Controls->Add(this->clear_Button);
-			this->Controls->Add(this->eraser_Size);
-			this->Controls->Add(this->pen_Size);
-			this->Controls->Add(this->eraser_Button);
-			this->Controls->Add(this->pen_Button);
+			this->BackColor = System::Drawing::SystemColors::ActiveBorder;
+			this->ClientSize = System::Drawing::Size(561, 450);
+			this->Controls->Add(this->toolStripTools);
+			this->Controls->Add(this->toolStripColor);
 			this->Controls->Add(this->canvas);
+			this->Icon = (cli::safe_cast<System::Drawing::Icon^>(resources->GetObject(L"$this.Icon")));
 			this->Name = L"Interface";
-			this->Text = L"Interface";
+			this->Text = L"BestGraphicEditorEver";
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->canvas))->EndInit();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pen_Size))->EndInit();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->eraser_Size))->EndInit();
+			this->toolStripColor->ResumeLayout(false);
+			this->toolStripColor->PerformLayout();
+			this->toolStripTools->ResumeLayout(false);
+			this->toolStripTools->PerformLayout();
 			this->ResumeLayout(false);
 
 		}
-
-		// 1 - pen // 2 - eraser // 3 - rectangle // 4 - ellipse // 5 - stroke
 
 		void paint() {
 
 			Graphics^ a = canvas->CreateGraphics();
 
-			if (checkInstrument == 1) {
-				int penSize;
-				penSize = Convert::ToInt32(pen_Size->Value);
-				Pen^ pen = gcnew Pen(CurrentColor, penSize);
-				a -> DrawLine(pen, PreviousPoint, CurrentPoint);
+			switch (checkInstrument) {
+			case(pen):
+			{
+				Pen^ pen = gcnew Pen(CurrentColor, width);
+				a->DrawLine(pen, PreviousPoint, CurrentPoint);
+				break;
 			}
-			if (checkInstrument == 2) {
-				int eraserSize;
-				eraserSize = Convert::ToInt32(eraser_Size->Value);
-				Pen^ pen = gcnew Pen(CurrentColor, eraserSize);
-				a -> DrawLine(pen, PreviousPoint, CurrentPoint);
+			case(eraser):
+			{
+				Pen^ pen = gcnew Pen(Color::White, width);
+				a->DrawLine(pen, PreviousPoint, CurrentPoint);
+				break;
 			}
-		}
-
-		void paintShape() {
-
-			Graphics^ a = canvas->CreateGraphics();
-
-			if (checkInstrument == 3) {
-				int rectangleWireWidth = 1;
-				Pen^ pen = gcnew Pen(CurrentColor, rectangleWireWidth);
-				a -> DrawRectangle(pen, Math::Min(PreviousPoint.X, CurrentPoint.X), Math::Min(PreviousPoint.Y, CurrentPoint.Y),
-					Math::Abs(PreviousPoint.X - CurrentPoint.X), Math::Abs(PreviousPoint.Y - CurrentPoint.Y));
+			case(rectangle):
+			{
+				Pen^ pen = gcnew Pen(CurrentColor, width);
+				a->DrawRectangle(pen, Math::Min(PreviousPoint.X, CurrentPoint.X),
+					Math::Min(PreviousPoint.Y, CurrentPoint.Y),
+					Math::Abs(PreviousPoint.X - CurrentPoint.X),
+					Math::Abs(PreviousPoint.Y - CurrentPoint.Y));
+				break;
 			}
-			if (checkInstrument == 4) {
-				int ellipseWireWidth = 1;
-				Pen^ pen = gcnew Pen(CurrentColor, ellipseWireWidth);
-				a -> DrawEllipse(pen, Math::Min(PreviousPoint.X, CurrentPoint.X), Math::Min(PreviousPoint.Y, CurrentPoint.Y),
-					Math::Abs(PreviousPoint.X - CurrentPoint.X), Math::Abs(PreviousPoint.Y - CurrentPoint.Y));
+			case(ellipse):
+			{
+				Pen^ pen = gcnew Pen(CurrentColor, width);
+				a->DrawEllipse(pen, Math::Min(PreviousPoint.X, CurrentPoint.X),
+					Math::Min(PreviousPoint.Y, CurrentPoint.Y),
+					Math::Abs(PreviousPoint.X - CurrentPoint.X),
+					Math::Abs(PreviousPoint.Y - CurrentPoint.Y));
+				break;
 			}
-			if (checkInstrument == 5) {
-				int strokeWidth = 1;
-				Pen^ pen = gcnew Pen(CurrentColor, strokeWidth);
-				a -> DrawLine(pen, PreviousPoint, CurrentPoint);
+			case(stroke):
+			{
+				Pen^ pen = gcnew Pen(CurrentColor, width);
+				a->DrawLine(pen, PreviousPoint, CurrentPoint);
+				break;
 			}
-		}
-
-		void clearShape() {
-
-			Graphics^ a = canvas->CreateGraphics();
-
-			if (checkInstrument == 3) {
-				int rectangleWireWidth = 10;
-				Pen^ pen = gcnew Pen(Color::White, rectangleWireWidth);
-				a->DrawRectangle(pen, Math::Min(PreviousClearPoint.X, CurrentClearPoint.X), Math::Min(PreviousClearPoint.Y, CurrentClearPoint.Y),
-					Math::Abs(PreviousClearPoint.X - CurrentClearPoint.X), Math::Abs(PreviousClearPoint.Y - CurrentClearPoint.Y));
-			}
-			if (checkInstrument == 4) {
-				int ellipseWireWidth = 10;
-				Pen^ pen = gcnew Pen(Color::White, ellipseWireWidth);
-				a->DrawEllipse(pen, Math::Min(PreviousClearPoint.X, CurrentClearPoint.X), Math::Min(PreviousClearPoint.Y, CurrentClearPoint.Y),
-					Math::Abs(PreviousClearPoint.X - CurrentClearPoint.X), Math::Abs(PreviousClearPoint.Y - CurrentClearPoint.Y));
-			}
-			if (checkInstrument == 5) {
-				int strokeWidth = 10;
-				Pen^ pen = gcnew Pen(Color::White, strokeWidth);
-				a->DrawLine(pen, PreviousClearPoint, CurrentClearPoint);
 			}
 		}
-
-		private: System::Void penClick(System::Object^  sender, System::EventArgs^  e) {
-			CurrentColor = Color::Blue;
-			checkInstrument = 1;
-		}
-
-		private: System::Void eraserClick(System::Object^  sender, System::EventArgs^  e) {
-			CurrentColor = Color::White;
-			checkInstrument = 2;
-		}
-
-		private: System::Void rectangleClick(System::Object^  sender, System::EventArgs^  e) {
-			CurrentColor = Color::Blue;
-			checkInstrument = 3;
-		}
-
-		private: System::Void ellipseClick(System::Object^  sender, System::EventArgs^  e) {
-			CurrentColor = Color::Blue;
-			checkInstrument = 4;
-		}
-
-		private: System::Void strokeClick(System::Object^  sender, System::EventArgs^  e) {
-			CurrentColor = Color::Blue;
-			checkInstrument = 5;
-		}
-
-		private: System::Void clearClick(System::Object^  sender, System::EventArgs^  e) {
-			canvas -> Refresh();
-		}	
 
 		private: System::Void canvas_MouseUp(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e) {
 			isPressed = false;
-			clear = false;
+			if (checkInstrument == 3 || checkInstrument == 4 || checkInstrument == 5) {
+				CurrentPoint = e->Location;
+				paint();				
+			}
 		}
 
 		private: System::Void canvas_MouseDown(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e) {
@@ -297,20 +411,61 @@ namespace SupaDupaPaint {
 					PreviousPoint = e -> Location;
 					paint();					
 				}
-				if (checkInstrument == 3 || checkInstrument == 4 || checkInstrument == 5) {
-					if (clear) {
-						clearShape();
-						clear = false;
-					}
-					else {						
-						clear = true;
-					}
-					CurrentPoint = e->Location;
-					paintShape();
-					CurrentClearPoint = CurrentPoint;
-					PreviousClearPoint = PreviousPoint;
-				}
 			}
 		}		
+
+		private: System::Void blackColorButtonClick(System::Object^  sender, System::EventArgs^  e) {
+			CurrentColor = Color::Black;
+		}
+		private: System::Void greyColorButtonClick(System::Object^  sender, System::EventArgs^  e) {
+			CurrentColor = Color::Gray;
+		}
+		private: System::Void whiteColorButtonClick(System::Object^  sender, System::EventArgs^  e) {
+			CurrentColor = Color::White;
+		}
+		private: System::Void redColorButtonClick(System::Object^  sender, System::EventArgs^  e) {
+			CurrentColor = Color::Red;
+		}
+		private: System::Void yellowColorButtonClick(System::Object^  sender, System::EventArgs^  e) {
+			CurrentColor = Color::Yellow;
+		}
+		private: System::Void greenColorButtonClick(System::Object^  sender, System::EventArgs^  e) {
+			CurrentColor = Color::Green;
+		}
+		private: System::Void blueColorButtonClick(System::Object^  sender, System::EventArgs^  e) {
+			CurrentColor = Color::Blue;
+		}
+
+		private: System::Void penButtonClick(System::Object^  sender, System::EventArgs^  e) {
+			checkInstrument = 1;
+		}
+		private: System::Void eraserButtonClick(System::Object^  sender, System::EventArgs^  e) {
+			checkInstrument = 2;
+		}
+		private: System::Void rectangleButtonClick(System::Object^  sender, System::EventArgs^  e) {
+			checkInstrument = 3;
+		}
+		private: System::Void ellipseButtonClick(System::Object^  sender, System::EventArgs^  e) {
+			checkInstrument = 4;
+		}
+		private: System::Void strokeButtonClick(System::Object^  sender, System::EventArgs^  e) {
+			checkInstrument = 5;
+		}		
+		private: System::Void clearButton_Click(System::Object^  sender, System::EventArgs^  e) {
+			canvas->Refresh();
+		}
+
+		private: System::Void widthOnePixelClick(System::Object^  sender, System::EventArgs^  e) {
+			width = 1;
+		}
+		private: System::Void widthThreePixelsClick(System::Object^  sender, System::EventArgs^  e) {
+			width = 3;
+		}
+		private: System::Void widthFivePixelsClick(System::Object^  sender, System::EventArgs^  e) {
+			width = 5;
+		}
+		private: System::Void widthEightPixelsClick(System::Object^  sender, System::EventArgs^  e) {
+			width = 8;
+		}
 };
 }
