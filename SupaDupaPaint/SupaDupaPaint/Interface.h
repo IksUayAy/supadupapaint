@@ -7,7 +7,7 @@ namespace SupaDupaPaint {
 	using namespace System::Data;
 	using namespace System::Drawing;
 
-	enum tools { pen = 1, eraser, rectangle, ellipse, stroke };
+	enum tools { pen, eraser, rectangle, ellipse, stroke };
 
 	public ref class Interface : public System::Windows::Forms::Form
 	{		
@@ -26,7 +26,7 @@ namespace SupaDupaPaint {
 	Point PreviousClearPoint;
 	float width = 1;
 	bool isPressed = false;
-	int checkInstrument = 0;
+	tools checkInstrument;
 
 	private: System::Windows::Forms::PictureBox^  canvas;
 	private: System::Windows::Forms::ToolStrip^  toolStripColor;
@@ -393,7 +393,7 @@ namespace SupaDupaPaint {
 
 		private: System::Void canvas_MouseUp(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e) {
 			isPressed = false;
-			if (checkInstrument == 3 || checkInstrument == 4 || checkInstrument == 5) {
+			if (checkInstrument == tools::rectangle || checkInstrument == tools::ellipse || checkInstrument == tools::stroke) {
 				CurrentPoint = e->Location;
 				paint();				
 			}
@@ -406,7 +406,7 @@ namespace SupaDupaPaint {
 
 		private: System::Void canvas_MouseMove(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e) {
 			if (isPressed) {
-				if (checkInstrument == 1 || checkInstrument == 2) {
+				if (checkInstrument == tools::pen || checkInstrument == tools::eraser) {
 					CurrentPoint = PreviousPoint;
 					PreviousPoint = e -> Location;
 					paint();					
@@ -435,21 +435,21 @@ namespace SupaDupaPaint {
 		private: System::Void blueColorButtonClick(System::Object^  sender, System::EventArgs^  e) {
 			CurrentColor = Color::Blue;
 		}
-
+		
 		private: System::Void penButtonClick(System::Object^  sender, System::EventArgs^  e) {
-			checkInstrument = 1;
+			checkInstrument = tools::pen;
 		}
 		private: System::Void eraserButtonClick(System::Object^  sender, System::EventArgs^  e) {
-			checkInstrument = 2;
+			checkInstrument = tools::eraser;
 		}
 		private: System::Void rectangleButtonClick(System::Object^  sender, System::EventArgs^  e) {
-			checkInstrument = 3;
+			checkInstrument = tools::rectangle;
 		}
 		private: System::Void ellipseButtonClick(System::Object^  sender, System::EventArgs^  e) {
-			checkInstrument = 4;
+			checkInstrument = tools::ellipse;
 		}
 		private: System::Void strokeButtonClick(System::Object^  sender, System::EventArgs^  e) {
-			checkInstrument = 5;
+			checkInstrument = tools::stroke;
 		}		
 		private: System::Void clearButton_Click(System::Object^  sender, System::EventArgs^  e) {
 			canvas->Refresh();
